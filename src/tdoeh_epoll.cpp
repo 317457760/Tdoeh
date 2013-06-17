@@ -47,8 +47,7 @@ int CEpoll::create(bool bEt, int iDefaultEventSize)
     m_iEventCount = iDefaultEventSize;
 
     m_bEt = bEt;
-    //m_pEvents = TDOEH_NEW epoll_event[m_iEventCount]; 
-    m_pEvents = new(std::nothrow) epoll_event[m_iEventCount]; 
+    m_pEvents = TDOEH_NEW epoll_event[m_iEventCount]; 
     if(m_pEvents == NULL){
         m_iEventCount = 0; 
         TDOEH_SET_ERROR_NUMBER_RETURN(CBase::E_NOMEMORY);

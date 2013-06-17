@@ -43,7 +43,7 @@ namespace Tdoeh{
     }while(0)
 
 #define TDOEH_NEW \
-    std::new(std::nothrow)
+    new(std::nothrow)
 
 
 class CBase : public CNoncopyable{
