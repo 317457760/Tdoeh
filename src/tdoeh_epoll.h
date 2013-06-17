@@ -10,9 +10,11 @@
 
 #include "tdoeh_base.h"
 
+namespace Tdoeh{
+
 class CEpoll : public CBase{
     enum{
-        EPOLL_MAX_EVENT = 100000; //一次只处理这些事件
+        EPOLL_MAX_EVENT = 100000 //一次只处理这些事件
     };
 
     enum{
@@ -39,5 +41,7 @@ public:
     int wait(int millsecond);
     struct epoll_event *get(int iIndex);
 };
+
+}
 
 #endif

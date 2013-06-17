@@ -5,7 +5,11 @@
  * 描  述: 
  * 修  改: 
  *************************************************************************************/
+#include <sys/epoll.h>
+#include <unistd.h>
 #include "tdoeh_epoll.h"
+
+namespace Tdoeh{
 
 CEpoll::CEpoll() : 
     m_bEt(true), 
@@ -21,7 +25,7 @@ CEpoll::~CEpoll()
         delete []m_pEvents;
     }
     if(m_hEpollFd != -1){
-        close(m_hEpollFd);
+        ::close(m_hEpollFd);
     }
 }
 
@@ -43,7 +47,8 @@ int CEpoll::create(bool bEt, int iDefaultEventSize)
     m_iEventCount = iDefaultEventSize;
 
     m_bEt = bEt;
-    m_pEvents = TDOEH_NEW epoll_event[m_iEventCount]; 
+    //m_pEvents = TDOEH_NEW epoll_event[m_iEventCount]; 
+    m_pEvents = new(std::nothrow) epoll_event[m_iEventCount]; 
     if(m_pEvents == NULL){
         m_iEventCount = 0; 
         TDOEH_SET_ERROR_NUMBER_RETURN(CBase::E_NOMEMORY);
@@ -54,17 +59,17 @@ int CEpoll::create(bool bEt, int iDefaultEventSize)
 
 int CEpoll::add(int hFd, long long llData, uint32_t nEvent)
 {
-    return ctrl(fd, data, event, EPOLL_CTL_ADD);
+    return ctrl(hFd, llData, nEvent, EPOLL_CTL_ADD);
 }
 
 int CEpoll::mod(int hFd, long long llData, uint32_t nEvent)
 {
-    return ctrl(fd, data, event, EPOLL_CTL_ADD);
+    return ctrl(hFd, llData, nEvent, EPOLL_CTL_MOD);
 }
 
 int CEpoll::del(int hFd, long long llData, uint32_t nEvent)
 {
-    return ctrl(fd, data, event, EPOLL_CTL_ADD);
+    return ctrl(hFd, llData, nEvent, EPOLL_CTL_DEL);
 }
 
 
@@ -94,4 +99,6 @@ int CEpoll::wait(int millsecond)
     }
 
     return iReadyCount;
+}
+
 }

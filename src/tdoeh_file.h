@@ -10,6 +10,11 @@
 #ifndef __TDOEH_FILE_H__
 #define __TDOEH_FILE_H__
 
+#include <stdarg.h>
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
+
 namespace Tdoeh{
 
 class CFile

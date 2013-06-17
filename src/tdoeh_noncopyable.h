@@ -11,6 +11,7 @@
 namespace Tdoeh{
 
 class CNoncopyable{
+private:
     CNoncopyable(const CNoncopyable &);
     CNoncopyable &operator=(const CNoncopyable &);
 

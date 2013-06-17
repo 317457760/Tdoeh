@@ -50,6 +50,11 @@ const char *CBase::getLastErrorMessage(int iErrorNumber)
             snprintf(m_szErrorMessage, sizeof(m_szErrorMessage), 
                     "invalid argument");
             break;
+        case E_NOMEMORY:
+            snprintf(m_szErrorMessage, sizeof(m_szErrorMessage), 
+                    "no enough memory");
+            break;
+
     }
 
     //类自己定义错误

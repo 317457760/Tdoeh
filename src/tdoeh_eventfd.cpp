@@ -5,6 +5,8 @@
  * 描  述: 
  * 修  改: 
  *************************************************************************************/
+#include <sys/eventfd.h>
+#include <unistd.h>
 #include "tdoeh_eventfd.h"
 
 namespace Tdoeh{

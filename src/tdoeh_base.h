@@ -9,6 +9,12 @@
 #define __TDOEH_BASE_H__
 
 #include <stdarg.h>
+#include <string.h>
+#include <errno.h>
+#include <new>
+#include <stdint.h>
+#include <stddef.h>
+#include <linux/types.h>
 #include "tdoeh_noncopyable.h"
 
 namespace Tdoeh{
@@ -36,6 +42,9 @@ namespace Tdoeh{
         return m_iErrorNumber; \
     }while(0)
 
+#define TDOEH_NEW \
+    std::new(std::nothrow)
+
 
 class CBase : public CNoncopyable{
 protected:
@@ -48,7 +57,8 @@ public:
         E_SUCCESS = 0,
         
         E_UNKNOWN = -5000,      //E_UNKNOWN为系统中错误的最大值
-        E_ARGUMENTS = E_UNKNOWN - 1,
+        E_ARGUMENTS = E_UNKNOWN - 1,    //非法参数
+        E_NOMEMORY = E_UNKNOWN - 2,     //内存不足
 
         //类自定义错误最大值
         E_MAX_ERROR_NUMBER = -10000
