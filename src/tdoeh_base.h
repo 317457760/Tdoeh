@@ -12,6 +12,7 @@
 #include <string.h>
 #include <errno.h>
 #include <new>
+#include <stdio.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <linux/types.h>
@@ -31,7 +32,7 @@ namespace Tdoeh{
 #define TDOEH_SET_ERROR_RETURN(X, Y, ...) \
     do{ \
         m_iErrorNumber = X; \
-        snprintf(m_szErrorMessage, sizeof(m_szErrorMessage), Y, ##__VA_ARGS__); \
+        ::snprintf(m_szErrorMessage, sizeof(m_szErrorMessage), Y, ##__VA_ARGS__); \
         return m_iErrorNumber; \
     }while(0)
 

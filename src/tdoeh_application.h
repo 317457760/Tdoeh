@@ -15,6 +15,16 @@ namespace Tdoeh{
 class CApplication : public CSingleton<CApplication>{
     CConfig m_conf;
 
+    int m_iNetThread;
+    CNetThread *m_pNetThread;
+
+    int m_iWorkThread;
+    CWorkThread *m_pWorkThread;
+
+    CMessageQueue *m_pMessageQueue;
+
+    bool m_bTerminal;
+
 public:
     int main(int argc, char **argv);
 

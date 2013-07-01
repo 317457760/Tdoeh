@@ -5,3 +5,9 @@ all:
 		-I ../src/ \
 		-L ../thirdparty/gtest-1.6.0/lib/.libs \
 		-lgtest -lgtest_main -lpthread
+	g++ -g test_queue.cpp ../src/tdoeh_base.cpp \
+		-o test_queue \
+		-I ../thirdparty/gtest-1.6.0/include/ \
+		-I ../src/ \
+		-L ../thirdparty/gtest-1.6.0/lib/.libs \
+		-lgtest -lgtest_main -lpthread
