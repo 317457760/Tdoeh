@@ -14,7 +14,7 @@ namespace Tdoeh{
 
 class CEpoll : public CBase{
     enum{
-        EPOLL_MAX_EVENT = 100000 //一次只处理这些事件
+        EPOLL_MAX_EVENT = 100000 //一次最多只处理这些事件
     };
 
     enum{
@@ -23,6 +23,7 @@ class CEpoll : public CBase{
 
     int m_hEpollFd;
     int m_iEventCount;
+    int m_iReadyEventCount;
     struct epoll_event *m_pEvents;
     bool m_bEt;
 
@@ -31,15 +32,15 @@ public:
     ~CEpoll();
 
 private:
-    int ctrl(int hFd, long long llData, uint32_t nEvent, int iOption);
+    int ctrl(int hFd, uint32_t nData, uint32_t nEvent, int iOption);
 
 public:
     int create(bool bEt, int iDefaultEventSize);
-    int add(int hFd, long long llData, uint32_t nEvent);
-    int mod(int hFd, long long llData, uint32_t nEvent);
-    int del(int hFd, long long llData, uint32_t nEvent);
+    int add(int hFd, uint32_t nData, uint32_t nEvent);
+    int mod(int hFd, uint32_t nData, uint32_t nEvent);
+    int del(int hFd, uint32_t nData, uint32_t nEvent);
     int wait(int millsecond);
-    struct epoll_event *get(int iIndex);
+    int get(int iIndex, int *pFd, uint32_t *pData, uint32_t *pEvent);
 };
 
 }

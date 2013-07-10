@@ -1,0 +1,26 @@
+package Tdoeh;
+
+enum
+{
+    REQ_NORMAL = 1; //普通调用
+    REQ_ONEWAY = 2; //单向调用
+};
+
+message request
+{
+    required fixed32 version = 1;  //请求ID
+    required fixed32 id = 2;  //请求ID
+    required fixed32 type = 3; //请求类型,单向调用
+    required string function = 4;   //请求接口
+    required int timeout = 5;   //超时时间
+    required bytes  data = 6;   //接口数据
+};
+
+message response
+{
+    required fixed32 version = 1;  //请求ID
+    required fixed32 id = 2;  //请求ID
+    required string function = 3;   //请求接口
+    required fixed32 return = 4; //函数返回值
+    required bytes  data = 5;   //返回数据
+}

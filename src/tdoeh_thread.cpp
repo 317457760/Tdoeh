@@ -39,7 +39,7 @@ void CThread::destory()
 int CThread::start()
 {
     TDOEH_RETURN_IF_ERROR(initialize());
-    int iReturn = pthread_create(&m_id, 0, (void *(*)(void *))&loop, (void *)this);
+    int iReturn = pthread_create(&m_id, 0, loop, (void *)this);
     if(iReturn != 0){
         TDOEH_SET_ERROR_NUMBER_RETURN(iReturn);
     }
@@ -64,22 +64,24 @@ int CThread::cancel()
 }
 */
 
-void CThread::loop(CThread *pThis)
+void *CThread::loop(void *pThis)
 {
-    pThis->m_iStat = RUNING;
+    ((CThread *)pThis)->m_iStat = RUNING;
 
     //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     //pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
-    while(pThis->m_iStat == RUNING){
+    while(((CThread *)pThis)->m_iStat == RUNING){
         //pthread_testcancel();
-        if(pThis->work() < 0){
+        if(((CThread *)pThis)->work() < 0){
             break;
         }
     }
 
-    pThis->destory();
-    pThis->m_iStat = STOPED;
+    ((CThread *)pThis)->destory();
+    ((CThread *)pThis)->m_iStat = STOPED;
+
+    return NULL;
 }
 
 }

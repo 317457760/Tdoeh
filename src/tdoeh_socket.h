@@ -22,37 +22,40 @@ public:
     CSocket();
     ~CSocket();
 
+private:
+    inline int bind(const char *szAddress);
+
 public:
     int fd() const;
 
     int initialize(int fd, bool bOwner, int iDomain = AF_INET);
-	int create(int iSocketType = SOCK_STREAM, int iDomain = AF_INET);
-    int close();
+	int create(int iType = SOCK_STREAM, int iDomain = AF_INET, bool bBlock = true);
+    void close();
 
-    void getPeerName(string &sPeerAddress, uint16_t &iPeerPort);
-    void getSockName(string &sSockAddress, uint16_t &iSockPort);
-
-	void bind(const string &sServerAddr, int port);
-	int listen(int connBackLog);
-	int accept(CSocket &sock, bool bNoBlock = false);
-	int connect(const string &sServerAddr, uint16_t port);
+	void bind(const char *szAddress, int iPort);
+	int listen(int iBackLog);
+	int accept(CSocket &objSock, bool bBlock = true);
+	int connect(const char *szAddress, uint16_t port);
 
     int recv(void *pvBuf, size_t iLen, int iFlag = 0);
 	int send(const void *pvBuf, size_t iLen, int iFlag = 0);
     int recvfrom(void *pvBuf, size_t iLen, string &sFromAddr, uint16_t &iFromPort, int iFlags = 0);
 	int sendto(const void *pvBuf, size_t iLen, const string &sToAddr, uint16_t iToPort, int iFlags = 0);
 
+    void getPeerName(string &sPeerAddress, uint16_t &iPeerPort);
+    void getSockName(string &sSockAddress, uint16_t &iSockPort);
 
 	int setSockOpt(int opt, const void *pvOptVal, socklen_t optLen, int level = SOL_SOCKET);
 	int getSockOpt(int opt, void *pvOptVal, socklen_t &optLen, int level = SOL_SOCKET);
-    int setblock(bool bBlock = false);
+    int setReuse(bool bReuse = true);
+    int setBlock(bool bBlock = true);
     //void setNoCloseWait();
     //void setKeepAlive();
     //void setTcpNoDelay();
-    int getRecvBufferSize();
-    int setRecvBufferSize(int sz);
-    int getSendBufferSize();
-    int setSendBufferSize(int sz);
+    //int getRecvBufferSize();
+    //int setRecvBufferSize(int sz);
+    //int getSendBufferSize();
+    //int setSendBufferSize(int sz);
 };
 
 }

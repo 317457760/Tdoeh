@@ -54,8 +54,8 @@ public:
     int initialize();
     int setManagerServer(string strIp, int iPort);
     int setServer(string strIp, int iPort, int iType);
-    int setNetThreadCount(int iCount = 2);
-    int setWorkThreadCount(int iCount = 10);
+    int setNetThreadCount(int iCount);
+    int setWorkThreadCount(int iCount);
     int start();
 
 public:

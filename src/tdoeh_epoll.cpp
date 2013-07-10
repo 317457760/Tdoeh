@@ -56,26 +56,27 @@ int CEpoll::create(bool bEt, int iDefaultEventSize)
     return E_SUCCESS;
 }
 
-int CEpoll::add(int hFd, long long llData, uint32_t nEvent)
+int CEpoll::add(int hFd, uint32_t nData, uint32_t nEvent)
 {
-    return ctrl(hFd, llData, nEvent, EPOLL_CTL_ADD);
+    return ctrl(hFd, nData, nEvent, EPOLL_CTL_ADD);
 }
 
-int CEpoll::mod(int hFd, long long llData, uint32_t nEvent)
+int CEpoll::mod(int hFd, uint32_t nData, uint32_t nEvent)
 {
-    return ctrl(hFd, llData, nEvent, EPOLL_CTL_MOD);
+    return ctrl(hFd, nData, nEvent, EPOLL_CTL_MOD);
 }
 
-int CEpoll::del(int hFd, long long llData, uint32_t nEvent)
+int CEpoll::del(int hFd, uint32_t nData, uint32_t nEvent)
 {
-    return ctrl(hFd, llData, nEvent, EPOLL_CTL_DEL);
+    return ctrl(hFd, nData, nEvent, EPOLL_CTL_DEL);
 }
 
 
-int CEpoll::ctrl(int hFd, long long llData, uint32_t nEvent, int iOption)
+int CEpoll::ctrl(int hFd, uint32_t nData, uint32_t nEvent, int iOption)
 {
     struct epoll_event ev;
-    ev.data.u64 = llData;
+    ev.data.u64 = nData;
+    ev.data.u64 = ev.data.u64 << 32 | hFd;
 
     if(m_bEt){
         ev.events = nEvent | EPOLLET;
@@ -92,12 +93,26 @@ int CEpoll::ctrl(int hFd, long long llData, uint32_t nEvent, int iOption)
 
 int CEpoll::wait(int millsecond)
 {
-    int iReadyCount = epoll_wait(m_hEpollFd, m_pEvents, m_iEventCount, millsecond);
-    if(iReadyCount == -1){
+    int m_iReadyEventCount = epoll_wait(m_hEpollFd, m_pEvents, m_iEventCount, millsecond);
+    if(m_iReadyEventCount == -1){
         TDOEH_SET_ERROR_NUMBER_RETURN(errno);
     }
 
-    return iReadyCount;
+    return m_iReadyEventCount;
+}
+
+
+int CEpoll::get(int iIndex, int *pFd, uint32_t *pData, uint32_t *pEvent)
+{
+    if(iIndex >= m_iReadyEventCount || iIndex < 0){
+        TDOEH_SET_ERROR_NUMBER_RETURN(E_ARGUMENTS);
+    }
+
+    *pEvent = m_pEvents[i].events;
+    *pFd = m_pEvents[i].data.u64 & 0x00000000FFFFFFFF;
+    *pData = m_pEvents[i].data.u64>>32; 
+
+    return E_SUCCESS;
 }
 
 }

@@ -65,6 +65,10 @@ public:
         E_MAX_ERROR_NUMBER = -10000
     };
 
+    enum{
+        INVALID_HANDLE = -1
+    };
+
 public:
     CBase();
     virtual ~CBase();

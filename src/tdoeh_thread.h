@@ -41,7 +41,7 @@ public:
     int stat();
 
 private:
-    static void loop(CThread *pThis);
+    static void *loop(void *pThis);
 };
 
 }
