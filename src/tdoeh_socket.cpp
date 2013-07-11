@@ -173,4 +173,9 @@ int CSocket::accept(CSocket &objSock, bool bBlock)
     return objSock.initialize(iFd, true, m_iDomain);
 }
 
+int CSocket::connect(const char *szAddress, uint16_t port)
+{
+    return 0;
+}
+
 }
