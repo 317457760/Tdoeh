@@ -24,6 +24,9 @@ public:
 
 private:
     inline int bind(const char *szAddress);
+	inline int connect(const char *szAddress);
+    int getPeerName(string &sPeerAddress);
+    int getSockName(string &sSockAddress);
 
 public:
     int fd() const;
@@ -35,15 +38,15 @@ public:
 	void bind(const char *szAddress, int iPort);
 	int listen(int iBackLog);
 	int accept(CSocket &objSock, bool bBlock = true);
-	int connect(const char *szAddress, uint16_t port);
+	int connect(const char *szAddress, uint16_t nPort);
 
-    int recv(void *pvBuf, size_t iLen, int iFlag = 0);
-	int send(const void *pvBuf, size_t iLen, int iFlag = 0);
-    int recvfrom(void *pvBuf, size_t iLen, string &sFromAddr, uint16_t &iFromPort, int iFlags = 0);
-	int sendto(const void *pvBuf, size_t iLen, const string &sToAddr, uint16_t iToPort, int iFlags = 0);
+    int recv(void *pvBuf, size_t iLen, int iFlags = 0);
+	int send(const void *pvBuf, size_t iLen, int iFlags = 0);
+    int recvfrom(void *pvBuf, size_t iLen, string &strFromAddr, uint16_t *pnFromPort, int iFlags = 0);
+	int sendto(const void *pvBuf, size_t iLen, const char *szToAddr, uint16_t iToPort, int iFlags = 0);
 
-    void getPeerName(string &sPeerAddress, uint16_t &iPeerPort);
-    void getSockName(string &sSockAddress, uint16_t &iSockPort);
+    int getPeerName(string &sPeerAddress, uint16_t &iPeerPort);
+    int getSockName(string &sSockAddress, uint16_t &iSockPort);
 
 	int setSockOpt(int opt, const void *pvOptVal, socklen_t optLen, int level = SOL_SOCKET);
 	int getSockOpt(int opt, void *pvOptVal, socklen_t &optLen, int level = SOL_SOCKET);

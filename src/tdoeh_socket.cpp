@@ -114,11 +114,10 @@ int CSocket::bind(const char *szAddress)
 int CSocket::bind(const char *szAddress, int iPort)
 {
     if(m_iDomain == AF_UNIX){
-        return bind(szAddress);
+        return this->bind(szAddress);
     }
 
     struct sockaddr_in stBindAddr;
-    bzero(&stBindAddr, sizeof(struct sockaddr));
     stBindAddr.sin_family = m_iDomain;
     stBindAddr.sin_port = htons(iPort);
 
@@ -151,16 +150,16 @@ int CSocket::listen(int iBackLog)
 int CSocket::accept(CSocket &objSock, bool bBlock)
 {
     int iFd;
-    int iFlag = SOCK_CLOEXEC;
+    int iFlags = SOCK_CLOEXEC;
     struct sockaddr stSockAddr;
     socklen_t iSockLen = sizeof(sockaddr);
 
     if(!bBlock){
-        iFlag |= SOCK_NONBLOCK;
+        iFlags |= SOCK_NONBLOCK;
     }
 
     while(true){
-        iFd = ::accept4(m_iFd, &stSockAddr, &iSockLen, iFlag);
+        iFd = ::accept4(m_iFd, &stSockAddr, &iSockLen, iFlags);
         if(iFd >= 0){
             break;
         }
@@ -173,9 +172,93 @@ int CSocket::accept(CSocket &objSock, bool bBlock)
     return objSock.initialize(iFd, true, m_iDomain);
 }
 
-int CSocket::connect(const char *szAddress, uint16_t port)
+int CSocket::connect(const char *szAddress, uint16_t nPort)
 {
-    return 0;
+    if(m_iDomain == AF_UNIX){
+        return this->connect(szAddress);
+    }
+
+    struct sockaddr_in stServerAddr;
+    stServerAddr.sin_family = m_iDomain;
+    stServerAddr.sin_addr.s_addr = inet_aton(szAddress);
+    if(stServerAddr.sin_addr.s_addr == 0){
+        TDOEH_SET_ERROR_NUMBER_RETURN(errno);
+    }
+    stServerAddr.sin_port = htons(nPort);
+
+    if(::connect(m_iFd, (struct sockaddr *)&stServerAddr, sizeof(struct sockaddr)) < 0){
+        TDOEH_SET_ERROR_NUMBER_RETURN(errno); 
+    }
+
+    return E_SUCCESS;
+}
+
+int CSocket::connect(const char *szAddress)
+{
+    struct sockaddr_un stServerAddr;
+    stServerAddr.sin_family = m_iDomain;
+    strncpy(stServerAddr.sun_path, szAddress, sizeof(stServerAddr.sun_path));
+
+    if(::connect(m_iFd, (struct sockaddr *)&stServerAddr, sizeof(struct sockaddr)) < 0){
+        TDOEH_SET_ERROR_NUMBER_RETURN(errno); 
+    }
+
+    return E_SUCCESS;
+}
+
+int CSocket::recv(void *pvBuf, size_t iLen, int iFlags)
+{
+    ssize_t nRecvLen = ::recv(m_iFd, pvBuf, iLen, iFlags);
+    if(nRecvLen < 0){
+        TDOEH_SET_ERROR_NUMBER_RETURN(errno);
+    }
+
+    return nRecvLen;
+}
+
+int CSocket::send(void *pvBuf, size_t iLen, int iFlags)
+{
+    ssize_t nSendLen = ::send(m_iFd, pvBuf, iLen, iFlags);
+    if(nSendLen < 0){
+        TDOEH_SET_ERROR_NUMBER_RETURN(errno);
+    }
+
+    return nSendLen;
+}
+
+int CSocket::recvfrom(void *pvBuf, size_t iLen, string &strFromAddr, uint16_t *pnFromPort, int iFlags)
+{
+    struct sockaddr_in stFromAddr;
+    socklen_t nAddrLen = sizeof(struct sockaddr);
+
+    ssize_t nRecvLen = ::recvfrom(m_iFd, pvBuf, iLen, 
+                            (struct sockaddr *)&stFromAddr, &nAddrLen, iFlags);
+    if(nRecvLen < 0){
+        TDOEH_SET_ERROR_NUMBER_RETURN(errno);
+    }
+
+    char szAddress[20];
+    if(inet_ntop(m_iDomain, stFromAddr.sin_addr, szAddress, sizeof(szAddress)) == NULL){
+        TDOEH_SET_ERROR_NUMBER_RETURN(errno);
+    }
+    strFromAddr = szAddress;
+    *pnFromPort = ntohs(stFromAddr.sin_port);
+
+    return nRecvLen;
+}
+
+int CSocket::sendto(const void *pvBuf, size_t iLen, const char *szToAddr, uint16_t iToPort, int iFlags)
+{
+    struct sockaddr_in stToAddr;
+    stToAddr.sin_family = m_iDomain;
+    stToAddr.sin_addr.s_addr = inet_aton(szToAddr);
+    stToAddr.sin_port = htons(iToPort);
+    int iSendLength = ::sendto(m_iFd, pvBuf, iLen, &stToAddr, sizeof(stToAddr), iFlags);
+    if(iSendLength < 0){
+        TDOEH_SET_ERROR_NUMBER_RETURN(errno);
+    }
+
+    return iSendLength;
 }
 
 }
