@@ -93,7 +93,7 @@ int CEpoll::ctrl(int hFd, uint32_t nData, uint32_t nEvent, int iOption)
 
 int CEpoll::wait(int millsecond)
 {
-    int m_iReadyEventCount = epoll_wait(m_hEpollFd, m_pEvents, m_iEventCount, millsecond);
+    m_iReadyEventCount = epoll_wait(m_hEpollFd, m_pEvents, m_iEventCount, millsecond);
     if(m_iReadyEventCount == -1){
         TDOEH_SET_ERROR_NUMBER_RETURN(errno);
     }
@@ -104,13 +104,13 @@ int CEpoll::wait(int millsecond)
 
 int CEpoll::get(int iIndex, int *pFd, uint32_t *pData, uint32_t *pEvent)
 {
-    if(iIndex >= m_iReadyEventCount || iIndex < 0){
+    if((iIndex >= m_iReadyEventCount) || (iIndex < 0)){
         TDOEH_SET_ERROR_NUMBER_RETURN(E_ARGUMENTS);
     }
 
-    *pEvent = m_pEvents[i].events;
-    *pFd = m_pEvents[i].data.u64 & 0x00000000FFFFFFFF;
-    *pData = m_pEvents[i].data.u64>>32; 
+    *pEvent = m_pEvents[iIndex].events;
+    *pFd = m_pEvents[iIndex].data.u64 & 0x00000000FFFFFFFF;
+    *pData = m_pEvents[iIndex].data.u64>>32; 
 
     return E_SUCCESS;
 }

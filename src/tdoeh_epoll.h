@@ -21,11 +21,11 @@ class CEpoll : public CBase{
         DEFAULT_EVENT_SIZE = 1000
     };
 
+    bool m_bEt;
+    struct epoll_event *m_pEvents;
     int m_hEpollFd;
     int m_iEventCount;
     int m_iReadyEventCount;
-    struct epoll_event *m_pEvents;
-    bool m_bEt;
 
 public:
     CEpoll();

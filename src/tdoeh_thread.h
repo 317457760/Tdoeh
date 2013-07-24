@@ -21,8 +21,8 @@ class CThread : public CBase{
         STOPING = 2 //已经设置标识位
     };
 
-    pthread_t m_id;
     volatile int m_iStat;
+    pthread_t m_id;
 
 public:
     CThread();

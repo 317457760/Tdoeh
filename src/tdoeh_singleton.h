@@ -15,24 +15,26 @@
 
 namespace Tdoeh{
 
-template<typename T>
+template<class T>
 class CSingleton : public CNoncopyable{
 public:
-    static T *m_pInstance;
+    static T m_Instance;
 
 protected:
-    CSingleton(){ m_pInstance = new T(); };
-    ~CSingleton(){};
+    CSingleton(){ 
+    };
+    virtual ~CSingleton(){
+    };
 
 public:
-    static T* Instance()
+    static T& Instance()
     {
-        return (T *)m_pInstance; 
+        return m_Instance;
     }
 };
 
 template<typename T>
-T *CSingleton<T>::m_pInstance = NULL;
+T CSingleton<T>::m_Instance;
 
 };
 
